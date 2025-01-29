@@ -7,7 +7,7 @@ GITHUB_USERNAME = "rbhardwaj2186"  # Replace with your GitHub username
 GITHUB_TOKEN = os.getenv("PDFPORTFOLIO")  # Fetch from GitHub Actions Secrets
 
 # GitHub API URL
-url = f"https://api.github.com/users/rbhardwaj2186/github-portfolio.git"
+url = f"https://api.github.com/users/rbhardwaj2186/repos"  # ✅ Correct API URL
 
 # Use authentication to avoid rate limits
 headers = {"Authorization": f"token {GITHUB_TOKEN}"} if GITHUB_TOKEN else {}
