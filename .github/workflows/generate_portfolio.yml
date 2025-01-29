@@ -28,7 +28,7 @@ jobs:
 
       - name: Run Portfolio Script
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PDFPORTFOLIO: ${{ secrets.PDFPORTFOLIO }}
         run: python generate_portfolio.py
 
       - name: Upload Portfolio PDF
