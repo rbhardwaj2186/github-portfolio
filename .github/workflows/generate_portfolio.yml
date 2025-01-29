@@ -27,6 +27,8 @@ jobs:
           sudo apt-get install -y wkhtmltopdf  # Required for PDF generation
 
       - name: Run Portfolio Script
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python generate_portfolio.py
 
       - name: Upload Portfolio PDF

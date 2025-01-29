@@ -3,14 +3,39 @@ import pdfkit
 import os
 
 # GitHub username
-GITHUB_USERNAME = "your_github_username"
+GITHUB_USERNAME = "rbhardwaj2186"  # Replace with your GitHub username
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")  # Fetch from GitHub Actions Secrets
+
+# GitHub API URL
+url = f"https://api.github.com/users/{GITHUB_USERNAME}/repos"
+
+# Use authentication to avoid rate limits
+headers = {"Authorization": f"token {GITHUB_TOKEN}"} if GITHUB_TOKEN else {}
 
 # Fetch repositories from GitHub API
-url = f"https://github.com/rbhardwaj2186/github-portfolio.git"
-response = requests.get(url)
-repos = response.json()
+response = requests.get(url, headers=headers)
 
-# HTML Template for PDF
+# ✅ Check if the request was successful
+if response.status_code != 200:
+    print(f"❌ GitHub API request failed! Status code: {response.status_code}")
+    print(f"🔹 Response content: {response.text}")
+    exit(1)
+
+# ✅ Try to parse JSON safely
+try:
+    repos = response.json()
+except requests.exceptions.JSONDecodeError:
+    print("❌ Failed to decode JSON response. Possible empty response or API issue.")
+    print(f"🔹 Response content: {response.text}")
+    exit(1)
+
+# ✅ Check if we actually got repositories
+if not isinstance(repos, list):
+    print("❌ Unexpected API response format. Exiting.")
+    print(f"🔹 Response content: {response.text}")
+    exit(1)
+
+# Generate PDF content
 html_content = """
 <!DOCTYPE html>
 <html>
@@ -30,7 +55,6 @@ html_content = """
     <h1>GitHub Portfolio</h1>
 """
 
-# Add repositories to the HTML content
 for repo in repos:
     html_content += f"""
     <div class="repo">
@@ -50,4 +74,4 @@ with open("portfolio.html", "w", encoding="utf-8") as file:
 # Convert HTML to PDF
 pdfkit.from_file("portfolio.html", "GitHub_Portfolio.pdf")
 
-print("Portfolio PDF generated successfully!")
+print("✅ Portfolio PDF generated successfully!")
